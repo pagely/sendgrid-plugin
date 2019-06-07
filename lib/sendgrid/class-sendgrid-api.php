@@ -34,8 +34,8 @@ class Sendgrid_API implements Sendgrid_Send {
       'decompress' => false,
       'timeout' => Sendgrid_Tools::get_request_timeout()
     );
-    echo '<pre>';
-    print_r(json_decode($data['body']));
+    //echo '<pre>';
+    //print_r(json_decode($data['body']));
     // Send the request
     $response = wp_remote_post( self::URL, $data );
 
