@@ -742,7 +742,8 @@ class Personalization implements \JsonSerializable
         $headers,
         $substitutions,
         $custom_args,
-        $send_at;
+        $send_at,
+        $dynamic_template_data;
 
     public function addTo($email)
     {
@@ -824,6 +825,16 @@ class Personalization implements \JsonSerializable
         return $this->send_at;
     }
 
+    public function addDynamicTD($key, $value)
+    {
+        $this->dynamic_template_data[$key] = $value;
+    }
+
+    public function getDynamicTD()
+    {
+        return $this->dynamic_template_data;
+    }
+
     public function jsonSerialize()
     {
         return array_filter(
@@ -835,7 +846,8 @@ class Personalization implements \JsonSerializable
                 'headers' => $this->getHeaders(),
                 'substitutions' => $this->getSubstitutions(),
                 'custom_args' => $this->getCustomArgs(),
-                'send_at' => $this->getSendAt()
+                'send_at' => $this->getSendAt(),
+                'dynamic_template_data' => $this->getDynamicTD()
             ]
         );
     }

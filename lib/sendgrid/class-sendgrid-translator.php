@@ -32,7 +32,7 @@ class Sendgrid_Translator {
    */
   private static function get_smtp_filter_settings(
     SendGrid\Email  $email_v2,
-                    $filter_key, 
+                    $filter_key,
                     $filter_settings,
                     $filter_enabled   = 'enable'
   ) {
@@ -78,7 +78,7 @@ class Sendgrid_Translator {
         $output_array[ $setting_key ] = $setting_value;
       }
     }
-    
+
     return $output_array;
   }
 
@@ -241,6 +241,46 @@ class Sendgrid_Translator {
   }
 
   /**
+   * Sets the Dynamic Template Data (if set) to a V3 Personalization Object
+   *  - for API V3 the CC addresses are optional
+   *  - for API V3 the CC Name is optional for all CC addresses
+   *
+   * @param   type  SendGridV3\Personalization    $personalization
+   * @param   type  SendGrid\Email                $email_v2
+   *
+   * @return  void
+   */
+  private static function set_dynamic_td_v3(
+    SendGridV3\Personalization  $personalization,
+    SendGrid\Email              $email_v2
+  ) {
+    //if ( ! is_array( $email_v2->cc ) ) {
+    //  return;
+    //}
+
+    // set the Dynamic Subject and Body
+    //echo '<pre>';
+    //print_r($email_v3->getContents());
+    $personalization->addDynamicTD( 'subject', $email_v2->getSubject());
+    $personalization->addDynamicTD( 'content', $email_v2->html);
+    $personalization->addDynamicTD( 'headline', $email_v2->getSubject());
+    $personalization->addDynamicTD( 'notice', array('text' => 'Confirmation','class' => 'green'));
+
+
+
+    /*foreach ( $email_v2->cc as $index => $address ) {
+      // Check if "cc name" is set
+      $cc_name = null;
+      if ( self::is_valid_string( $email_v2->ccName[ $index ] ) ) {
+        $cc_name = trim( $email_v2->ccName[ $index ] );
+      }
+
+      $recipient = new SendGridV3\Email( $cc_name, $address );
+      $personalization->addCc( $recipient );
+    }*/
+  }
+
+  /**
    * Sets the BCC addresses and BCCNames (if set) to a V3 Personalization Object from a V2 Email
    *  - for API V3 the BCC addresses are optional
    *  - for API V3 the BCC Name is optional for all BCC addresses
@@ -322,7 +362,7 @@ class Sendgrid_Translator {
    *
    * @return  void
    */
-  private static function set_attachments_v3( 
+  private static function set_attachments_v3(
     SendGridV3\Mail   $email_v3,
     SendGrid\Email    $email_v2
   ) {
@@ -336,7 +376,7 @@ class Sendgrid_Translator {
       }
 
       $file_contents = file_get_contents( $file_info[ 'file' ] );
-  
+
       // file_get_contents retuns a bool or non-bool which evaluates to false if it fails
       if ( ! $file_contents ) {
         continue;
@@ -889,7 +929,7 @@ class Sendgrid_Translator {
       if ( $settings[ 'enable' ] ) {
         $subscription_tracking_settings->setEnable( true );
       }
-      
+
       if( isset( $settings[ 'replace' ] ) ) {
         $subscription_tracking_settings->setSubstitutionTag( $settings[ 'replace' ] );
       }
@@ -935,7 +975,7 @@ class Sendgrid_Translator {
       if ( $settings[ 'enable' ] ) {
         $ganalytics_tracking_settings->setEnable( true );
       }
-      
+
       if( isset( $settings[ 'utm_source' ] ) ) {
         $ganalytics_tracking_settings->setCampaignSource( $settings[ 'utm_source' ] );
       }
@@ -966,7 +1006,7 @@ class Sendgrid_Translator {
   }
 
   /**
-   * Returns a JSON encoded object for an API V3 mail send request, 
+   * Returns a JSON encoded object for an API V3 mail send request,
    *  from a V2 SendGrid Email object (v2 library).
    *
    * @param   type  SendGrid\Email    $email_v2
@@ -976,7 +1016,7 @@ class Sendgrid_Translator {
   public static function to_api_v3( SendGrid\Email $email_v2 ) {
     // Initialization
     $email_v3 = new SendGridV3\Mail();
-    
+
     // Standard fields transformation
     self::set_from_v3( $email_v3, $email_v2 );
     self::set_subject_v3( $email_v3, $email_v2 );
@@ -992,7 +1032,7 @@ class Sendgrid_Translator {
     self::set_send_at_v3( $email_v3, $email_v2 );
     self::set_asm_group_id_v3( $email_v3, $email_v2 );
     self::set_ip_pool_v3( $email_v3, $email_v2 );
-    
+
     // Mail Settings
     self::set_template_id_v3( $email_v3, $email_v2 );
     self::set_bcc_setting_v3( $email_v3, $email_v2 );
@@ -1016,10 +1056,11 @@ class Sendgrid_Translator {
     }
 
     // Set the CCs and BCCs to the first To
-    if ( is_array( $email_v3->personalization ) and 
+    if ( is_array( $email_v3->personalization ) and
       isset( $email_v3->personalization[0] ) ) {
       self::set_ccs_v3( $email_v3->personalization[0], $email_v2 );
       self::set_bccs_v3( $email_v3->personalization[0], $email_v2 );
+      self::set_dynamic_td_v3( $email_v3->personalization[0], $email_v2 );
     }
 
     // Return API v3 formatted JSON
