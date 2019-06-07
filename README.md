@@ -1,7 +1,10 @@
+# Pagely
+
+This has been tweaked a bit to take advatage of the sendgrid v3 api.. to use dynamic templates, Pagely Base.
 
 # SendGrid
 
-* Contributors: SendGrid 
+* Contributors: SendGrid
 * Donate link: http://sendgrid.com/
 * Tags: email, email reliability, email templates, sendgrid, smtp, transactional email, wp_mail,email infrastructure, email marketing, marketing email, deliverability, email deliverability, email delivery, email server, mail server, email integration, cloud email
 * Requires at least: 4.6
@@ -28,9 +31,9 @@ For assistance you can contact SendGrid Support from the <a href="https://suppor
 
 ### Agency Program
 
-Are you sending emails on behalf of your clients? SendGrid's Agency Program offers exclusive pricing and support for agencies looking to improve their email program. 
+Are you sending emails on behalf of your clients? SendGrid's Agency Program offers exclusive pricing and support for agencies looking to improve their email program.
 
-Want to learn more? Visit the <a href="https://www.sendgrid.com/partners/agencies">SendGrid Agency Page </a> 
+Want to learn more? Visit the <a href="https://www.sendgrid.com/partners/agencies">SendGrid Agency Page </a>
 
 ### The Subscription Widget
 
@@ -118,7 +121,7 @@ Use HTML content type for a single email:
 ```
 add_filter('wp_mail_content_type', 'set_html_content_type');
 
-// Send the email 
+// Send the email
 
 remove_filter('wp_mail_content_type', 'set_html_content_type');
 ```
