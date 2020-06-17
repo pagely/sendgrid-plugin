@@ -264,7 +264,7 @@ class Sendgrid_Translator {
     $personalization->addDynamicTD( 'subject', $email_v2->getSubject());
     $personalization->addDynamicTD( 'content', $email_v2->html);
     $personalization->addDynamicTD( 'headline', $email_v2->getSubject());
-    $personalization->addDynamicTD( 'notice', array('text' => 'Confirmation','class' => 'green'));
+    $personalization->addDynamicTD( 'notice', array('text' => 'Confirmation','class' => 'gray'));
 
 
 
